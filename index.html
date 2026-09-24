@@ -1,17 +1,56 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CPAT Connections</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connections</title>
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <h1>FQ1 - NYT Connections</h1>
 
-    <p>Find the four groups of four.</p>
+    <header>
+        <div class="top-line"></div>
+        <h1>CONNECTIONS</h1>
+        <div class="bottom-line"></div>
+    </header>
 
-    <button>TEST</button>
+    <main>
+
+        <h2>Connections</h2>
+
+        <p class="instructions">
+            Create four groups of four!
+        </p>
+
+        <p class="mistakes">
+            Mistakes remaining: <span id="mistakes">4</span>
+        </p>
+
+        <div id="solved-container"></div>
+
+        <div id="game-board"></div>
+
+        <div class="buttons">
+            <button id="shuffle-button">Shuffle</button>
+            <button id="submit-button">Submit</button>
+        </div>
+
+        <p id="message"></p>
+
+    </main>
+
+    <div id="win-screen" class="hidden">
+        <div class="win-box">
+            <h2>Congratulations!</h2>
+            <p>You solved all four groups.</p>
+            <p class="master">CONNECTIONS MASTER</p>
+            <p id="flag"></p>
+            <button id="play-again">Play Again</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
+
 </body>
 </html>
