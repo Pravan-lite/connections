@@ -3,54 +3,648 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Connections</title>
-    <link rel="stylesheet" href="style.css">
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #ffffff;
+            color: #111111;
+            font-family: Georgia, "Times New Roman", serif;
+        }
+
+        header {
+            text-align: center;
+            padding: 25px 20px 15px;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 42px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .top-line,
+        .bottom-line {
+            height: 1px;
+            background: #111111;
+            margin: 10px auto;
+            max-width: 900px;
+        }
+
+        main {
+            width: 90%;
+            max-width: 650px;
+            margin: 25px auto 50px;
+            text-align: center;
+        }
+
+        main h2 {
+            font-size: 32px;
+            margin-bottom: 5px;
+        }
+
+        .instructions {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+        }
+
+        .mistakes {
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            margin: 20px 0;
+        }
+
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            margin-top: 20px;
+        }
+
+        .word {
+            height: 85px;
+            border: none;
+            border-radius: 7px;
+            background: #efefe6;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.15s;
+            padding: 8px;
+        }
+
+        .word:hover {
+            background: #deded5;
+        }
+
+        .word.selected {
+            background: #5a5a5a;
+            color: white;
+        }
+
+        #solved-container {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .solved-group {
+            border-radius: 7px;
+            padding: 18px 10px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        .solved-title {
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        .solved-words {
+            font-size: 14px;
+        }
+
+        .blue {
+            background: #b5c9e8;
+        }
+
+        .green {
+            background: #b7d7a8;
+        }
+
+        .yellow {
+            background: #f2df88;
+        }
+
+        .purple {
+            background: #c7a8d9;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .buttons button,
+        #play-again {
+            border: 1px solid #111111;
+            background: white;
+            border-radius: 20px;
+            padding: 10px 22px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .buttons button:hover,
+        #play-again:hover {
+            background: #111111;
+            color: white;
+        }
+
+        #message {
+            height: 25px;
+            font-family: Arial, sans-serif;
+            font-weight: bold;
+        }
+
+        #win-screen {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.65);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #win-screen.hidden {
+            display: none;
+        }
+
+        .win-box {
+            background: white;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            text-align: center;
+            border-radius: 10px;
+            font-family: Arial, sans-serif;
+        }
+
+        .win-box h2 {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 32px;
+        }
+
+        .master {
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        #flag {
+            font-family: monospace;
+            font-size: 16px;
+            background: #eeeeee;
+            padding: 12px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 500px) {
+            header h1 {
+                font-size: 30px;
+            }
+
+            .word {
+                height: 70px;
+                font-size: 11px;
+            }
+
+            main h2 {
+                font-size: 26px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <header>
-        <div class="top-line"></div>
-        <h1>CONNECTIONS</h1>
-        <div class="bottom-line"></div>
-    </header>
+<header>
+    <div class="top-line"></div>
+    <h1>CONNECTIONS</h1>
+    <div class="bottom-line"></div>
+</header>
 
-    <main>
+<main>
 
-        <h2>Connections</h2>
+    <h2>Connections</h2>
 
-        <p class="instructions">
-            Create four groups of four!
-        </p>
+    <p class="instructions">
+        Create four groups of four!
+    </p>
 
-        <p class="mistakes">
-            Mistakes remaining: <span id="mistakes">4</span>
-        </p>
+    <p class="mistakes">
+        Mistakes remaining: <span id="mistakes">4</span>
+    </p>
 
-        <div id="solved-container"></div>
+    <div id="solved-container"></div>
 
-        <div id="game-board"></div>
+    <div id="game-board"></div>
 
-        <div class="buttons">
-            <button id="shuffle-button">Shuffle</button>
-            <button id="submit-button">Submit</button>
-        </div>
-
-        <p id="message"></p>
-
-    </main>
-
-    <div id="win-screen" class="hidden">
-        <div class="win-box">
-            <h2>Congratulations!</h2>
-            <p>You solved all four groups.</p>
-            <p class="master">CONNECTIONS MASTER</p>
-            <p id="flag"></p>
-            <button id="play-again">Play Again</button>
-        </div>
+    <div class="buttons">
+        <button id="shuffle-button">Shuffle</button>
+        <button id="submit-button">Submit</button>
     </div>
 
-    <script src="script.js"></script>
+    <p id="message"></p>
+
+</main>
+
+<div id="win-screen" class="hidden">
+
+    <div class="win-box">
+
+        <h2>Congratulations!</h2>
+
+        <p>You solved all four groups.</p>
+
+        <p class="master">CONNECTIONS MASTER</p>
+
+        <p id="flag"></p>
+
+        <button id="play-again">Play Again</button>
+
+    </div>
+
+</div>
+
+
+<script>
+
+const groups = [
+
+    {
+        name: "ANTIVIRUS SOFTWARE",
+        color: "blue",
+        words: [
+            "DEFENDER",
+            "MALWAREBYTES",
+            "MCAFEE",
+            "BITDEFENDER"
+        ]
+    },
+
+    {
+        name: "COMMON CYBERPATRIOT POINTS",
+        color: "green",
+        words: [
+            "LSP",
+            "GPO",
+            "USERS",
+            "SERVICES"
+        ]
+    },
+
+    {
+        name: "LINUX MINT RELEASES",
+        color: "yellow",
+        words: [
+            "GIGI",
+            "ZARA",
+            "WILMA",
+            "VIRGINIA"
+        ]
+    },
+
+    {
+        name: "CYBERPATRIOT OPEN DIVISION WINNERS",
+        color: "purple",
+        words: [
+            "TITANTURTLES",
+            "PHOENIX",
+            "HALF DOME",
+            "TEMPEST"
+        ]
+    }
+
+];
+
+
+let words = [];
+let selected = [];
+let solvedGroups = [];
+let mistakes = 4;
+
+
+const board = document.getElementById("game-board");
+const solvedContainer = document.getElementById("solved-container");
+const mistakesDisplay = document.getElementById("mistakes");
+const message = document.getElementById("message");
+
+const submitButton =
+    document.getElementById("submit-button");
+
+const shuffleButton =
+    document.getElementById("shuffle-button");
+
+const winScreen =
+    document.getElementById("win-screen");
+
+const flagDisplay =
+    document.getElementById("flag");
+
+const playAgainButton =
+    document.getElementById("play-again");
+
+
+function shuffleArray(array) {
+
+    for (let i = array.length - 1; i > 0; i--) {
+
+        const j = Math.floor(
+            Math.random() * (i + 1)
+        );
+
+        [array[i], array[j]] =
+            [array[j], array[i]];
+    }
+
+}
+
+
+function startGame() {
+
+    words = [];
+
+    groups.forEach(group => {
+
+        group.words.forEach(word => {
+
+            words.push({
+                word: word,
+                group: group
+            });
+
+        });
+
+    });
+
+
+    shuffleArray(words);
+
+    selected = [];
+    solvedGroups = [];
+    mistakes = 4;
+
+    mistakesDisplay.textContent = mistakes;
+
+    message.textContent = "";
+
+    solvedContainer.innerHTML = "";
+
+    board.innerHTML = "";
+
+    winScreen.classList.add("hidden");
+
+    renderBoard();
+
+}
+
+
+function renderBoard() {
+
+    board.innerHTML = "";
+
+    words.forEach(item => {
+
+        const button =
+            document.createElement("button");
+
+        button.className = "word";
+
+        button.textContent = item.word;
+
+
+        if (
+            selected.some(
+                selectedItem =>
+                selectedItem.word === item.word
+            )
+        ) {
+
+            button.classList.add("selected");
+
+        }
+
+
+        button.addEventListener(
+            "click",
+            () => selectWord(item)
+        );
+
+
+        board.appendChild(button);
+
+    });
+
+}
+
+
+function selectWord(item) {
+
+    const alreadySelected =
+        selected.some(
+            selectedItem =>
+            selectedItem.word === item.word
+        );
+
+
+    if (alreadySelected) {
+
+        selected =
+            selected.filter(
+                selectedItem =>
+                selectedItem.word !== item.word
+            );
+
+    }
+
+    else {
+
+        if (selected.length >= 4) {
+            return;
+        }
+
+        selected.push(item);
+
+    }
+
+
+    renderBoard();
+
+}
+
+
+function submitSelection() {
+
+    if (selected.length !== 4) {
+
+        message.textContent =
+            "Select exactly four words.";
+
+        return;
+    }
+
+
+    const selectedGroups =
+        selected.map(item => item.group);
+
+
+    const sameGroup =
+        selectedGroups.every(
+            group => group === selectedGroups[0]
+        );
+
+
+    if (sameGroup) {
+
+        const group =
+            selectedGroups[0];
+
+        solveGroup(group);
+
+        selected = [];
+
+        message.textContent =
+            "Correct!";
+
+        renderBoard();
+
+
+        if (
+            solvedGroups.length === groups.length
+        ) {
+
+            setTimeout(
+                showWinScreen,
+                500
+            );
+
+        }
+
+    }
+
+    else {
+
+        mistakes--;
+
+        mistakesDisplay.textContent =
+            mistakes;
+
+        message.textContent =
+            "Not quite!";
+
+        selected = [];
+
+        renderBoard();
+
+
+        if (mistakes === 0) {
+
+            setTimeout(() => {
+
+                alert(
+                    "Game over! Try again."
+                );
+
+                startGame();
+
+            }, 100);
+
+        }
+
+    }
+
+}
+
+
+function solveGroup(group) {
+
+    solvedGroups.push(group);
+
+
+    words =
+        words.filter(
+            item => item.group !== group
+        );
+
+
+    const groupBox =
+        document.createElement("div");
+
+    groupBox.className =
+        "solved-group " + group.color;
+
+
+    const title =
+        document.createElement("div");
+
+    title.className =
+        "solved-title";
+
+    title.textContent =
+        group.name;
+
+
+    const solvedWords =
+        document.createElement("div");
+
+    solvedWords.className =
+        "solved-words";
+
+    solvedWords.textContent =
+        group.words.join(" • ");
+
+
+    groupBox.appendChild(title);
+
+    groupBox.appendChild(solvedWords);
+
+    solvedContainer.appendChild(groupBox);
+
+}
+
+
+function showWinScreen() {
+
+    flagDisplay.textContent =
+        "flag{c0nn3ct10ns_m4st3r}";
+
+    winScreen.classList.remove("hidden");
+
+}
+
+
+shuffleButton.addEventListener(
+    "click",
+    () => {
+
+        shuffleArray(words);
+
+        renderBoard();
+
+        message.textContent = "";
+
+    }
+);
+
+
+submitButton.addEventListener(
+    "click",
+    submitSelection
+);
+
+
+playAgainButton.addEventListener(
+    "click",
+    startGame
+);
+
+
+// START THE GAME
+startGame();
+
+</script>
 
 </body>
 </html>
