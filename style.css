@@ -155,13 +155,16 @@ main h2 {
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.65);
-    display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.hidden {
-    display: none !important;
+#win-screen.hidden {
+    display: none;
+}
+
+#win-screen:not(.hidden) {
+    display: flex;
 }
 
 .win-box {
